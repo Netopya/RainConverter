@@ -7,6 +7,8 @@ import javax.swing.*;
 import java.util.Scanner;
 public class RainDriver {
 
+	// 8-bit to 4-bit conversion with gamma color correction for the
+	// Adafruit 1484 LED matrix
 	static int gamma[] = {
 			  0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,
 			  0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,
@@ -49,6 +51,8 @@ public class RainDriver {
 		
 		boolean run = true;
 		
+		// Ask the user for the directory containing the images
+		// and whether they wish to specify timing information
 		System.out.print("Enter the directory containing the images: ");
 		String fdir = myKeyboard.nextLine();
 		int timing = -1;
@@ -61,6 +65,7 @@ public class RainDriver {
 		
 		File folder = new File(fdir + "/");
 		
+		// Iterate through each image file
 		for(final File fileEntry : folder.listFiles()) {
 			BufferedImage img = null;
 			try {
@@ -68,12 +73,13 @@ public class RainDriver {
 			} catch (IOException e) {
 				String workingDir = System.getProperty("user.dir");
 			    System.out.println("The file " + fileEntry.getName() + " could not be loaded");
-			    //e.printStackTrace();
 			    continue;
 			}
 			
 			String output = "";
 			
+			// Go through the first 32 by 32 pixels and create a 3 character string
+			// for each pixel that represents its RGB values in hex
 			for(int i = 0; i < 32; i++) {
 				for(int j = 0; j < 32; j++) {
 					Color colo = new Color(img.getRGB(i, j), true);
@@ -84,6 +90,7 @@ public class RainDriver {
 				}
 			}
 			
+			// Write the timing information at the end of the file if any
 			if(timing >= 0) {
 				output += Integer.toHexString(timing);
 			}
@@ -99,6 +106,8 @@ public class RainDriver {
 				System.err.println("Could not save file " + fOut);
 				System.exit(0);
 			}
+			
+			// Write the converted image information to the new file
 			myFile.print(output);
 			myFile.close();
 			
@@ -106,95 +115,6 @@ public class RainDriver {
 			
 		}
 		
-		/*
-		while(true) {
-			
-			
-			System.out.print("Enter the name of the file: ");
-			String fPath = myKeyboard.nextLine();
-			
-			
-			BufferedImage img = null;
-			try {
-			    img = ImageIO.read(new File(fPath));
-			} catch (IOException e) {
-				String workingDir = System.getProperty("user.dir");
-			    System.out.println("The image " + fPath + "was not found in the current working directory : " + workingDir);
-			    //e.printStackTrace();
-			    System.exit(0);
-			}
-			
-			
-			/*
-			
-			Color col = new Color(img.getRGB(14, 13), true);
-			System.out.println(Integer.toHexString(col.getRed()));
-			System.out.println(Integer.toHexString(col.getGreen()));
-			System.out.println(Integer.toHexString(col.getBlue())); */
-			
-			/*
-			System.out.print("byte creep[32][32][3] = {\n");
-			for(int i=0; i<32;i++) {
-				//System.out.print("prog_char string_" + i +"[] PROGMEM = \"");
-				System.out.print("\t{");
-				for(int j=0;j<32;j++) {
-					//System.out.print("matrix.drawPixel(" + i + "," + j + ",matrix.Color888(");
-					System.out.print("{");
-					Color colo = new Color(img.getRGB(i, j), true);
-					System.out.print("0x" + Integer.toHexString(colo.getRed()) + ",");
-					System.out.print("0x" + Integer.toHexString(colo.getGreen()) + ",");
-					System.out.print("0x" + Integer.toHexString(colo.getBlue()));
-					System.out.print("}" + (j==31?"":","));
-					
-				}
-				System.out.print("}" + (i==31?"":",") +"\n");
-				//System.out.print("\n");
-				//System.out.print("\"\n");
-			}
-			System.out.print("\n};");
-			*/ /*
-			String output = "";
-			
-			for(int i = 0; i < 32; i++) {
-				for(int j = 0; j < 32; j++) {
-					Color colo = new Color(img.getRGB(i, j), true);
-					output += Integer.toHexString(gamma[colo.getRed()]) + Integer.toHexString(gamma[colo.getGreen()]) + Integer.toHexString(gamma[colo.getBlue()]);  
-					System.out.print(Integer.toHexString(gamma[colo.getRed()]));
-					System.out.print(Integer.toHexString(gamma[colo.getGreen()]));
-					System.out.print(Integer.toHexString(gamma[colo.getBlue()]));
-				}
-			}
-			
-		
-			System.out.print("\n");
-			System.out.print("Enter the name of the output file: ");
-			
-			String fOut = myKeyboard.nextLine();
-			
-			if(!fOut.endsWith(".txt")) {
-				fOut += ".txt";
-			}
-			
-			
-			PrintWriter myFile = null;
-			
-			try {
-				 myFile = new PrintWriter(fOut); 
-			} catch(FileNotFoundException e) {
-				
-				System.err.println("Could not save file " + fOut);
-				System.exit(0);
-			}
-			myFile.print(output);
-			myFile.close();
-			
-			System.out.println("File " + fOut + " was saved successfully");
-			
-			System.out.print("Again? y/n: ");
-			if(!myKeyboard.nextLine().equalsIgnoreCase("y")) {
-				run = false;
-			}
-		} */
 		System.out.println("Goodbye!");
 		myKeyboard.close();
 	}
