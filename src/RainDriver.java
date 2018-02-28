@@ -78,16 +78,20 @@ public class RainDriver {
 			
 			String output = "";
 			
-			// Go through the first 32 by 32 pixels and create a 3 character string
-			// for each pixel that represents its RGB values in hex
-			for(int i = 0; i < 32; i++) {
-				for(int j = 0; j < 32; j++) {
-					Color colo = new Color(img.getRGB(i, j), true);
-					output += Integer.toHexString(gamma[colo.getRed()]) + Integer.toHexString(gamma[colo.getGreen()]) + Integer.toHexString(gamma[colo.getBlue()]);  
-					System.out.print(Integer.toHexString(gamma[colo.getRed()]));
-					System.out.print(Integer.toHexString(gamma[colo.getGreen()]));
-					System.out.print(Integer.toHexString(gamma[colo.getBlue()]));
+			System.out.println("Converting file: " + fileEntry.getName());
+			
+			try {
+				// Go through the first 32 by 32 pixels and create a 3 character string
+				// for each pixel that represents its RGB values in hex
+				for(int i = 0; i < 32; i++) {
+					for(int j = 0; j < 32; j++) {
+						Color colo = new Color(img.getRGB(i, j), true);
+						output += Integer.toHexString(gamma[colo.getRed()]) + Integer.toHexString(gamma[colo.getGreen()]) + Integer.toHexString(gamma[colo.getBlue()]);
+					}
 				}
+			} catch(Exception e) {
+				System.err.println(e.getMessage());
+				continue;
 			}
 			
 			// Write the timing information at the end of the file if any
@@ -97,10 +101,13 @@ public class RainDriver {
 			
 			String fOut = fileEntry.getName() + ".txt";
 						
+			File outFile = new File(fdir + "/output/" + fOut);
+			outFile.getParentFile().mkdirs();
+
 			PrintWriter myFile = null;
 			
 			try {
-				 myFile = new PrintWriter(fOut); 
+				 myFile = new PrintWriter(outFile); 
 			} catch(FileNotFoundException e) {
 				
 				System.err.println("Could not save file " + fOut);
